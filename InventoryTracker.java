@@ -1,8 +1,11 @@
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class InventoryTracker {
+
     static class Item {
 
         String name;
@@ -15,10 +18,10 @@ public class InventoryTracker {
             this.quantity = quantity;
         }
     }
-    
-        static ArrayList<Item> inventory = new ArrayList<>();
 
-        //load inventory from a local file storage
+    static ArrayList<Item> inventory = new ArrayList<>();
+
+    //load inventory from a local file storage
     public static void load(String[] args) {
         try {
             Scanner scanner = new Scanner(new java.io.File("inventory.txt"));
@@ -60,6 +63,7 @@ public class InventoryTracker {
         }
         inventory.add(new Item(name, category, quantity));
     }
+
     //remove item from the inventory
     public static void removeItem(String name) {
         for (int i = 0; i < inventory.size(); i++) {
@@ -67,18 +71,18 @@ public class InventoryTracker {
                 inventory.remove(i);
                 System.out.println("Item removed: " + name);
                 return;
-            } 
+            }
         }
         System.out.println("Item not found: " + name);
     }
-        // search for a specific item in the inventory
+    // search for a specific item in the inventory
 
     public static void search() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the name of the item to search: ");
         String searchItem = scanner.nextLine();
         for (int i = 0; i < inventory.size(); i++) {
-                if (inventory.get(i).name.equalsIgnoreCase(searchItem)) {
+            if (inventory.get(i).name.equalsIgnoreCase(searchItem)) {
                 System.out.println("Item found: " + inventory.get(i).name + ", Category: " + inventory.get(i).category + ", Quantity: " + inventory.get(i).quantity);
                 return;
             }
@@ -98,6 +102,7 @@ public class InventoryTracker {
             System.out.println("Error occurred while writing to file.");
         }
     }
+
     public static void main(String[] args) {
         atStartup(args);
         Scanner scanner = new Scanner(System.in);
