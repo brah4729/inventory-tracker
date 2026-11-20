@@ -23,6 +23,19 @@ public class main {
                 case "add":
                     System.out.print("Enter item name: ");
                     String name = scanner.nextLine();
+                    try {
+                        if (name.trim().isEmpty()) {
+                            System.out.println("Item name cannot be empty. Please enter a valid name.");
+                            break;
+                        }
+                        if (name.matches(".*[^a-zA-Z0-9 ].*")) {
+                            System.out.println("Item name contains invalid characters. Please enter a valid name.");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while reading the item name. Please try again.");
+                        break;
+                    }
                     InventoryTracker.Item.Category category = null;
                     System.out.print("Enter item category (BOOKS, STATIONERY, ELECTRONICS): ");
                     for (int i = 0; i < 3; i++) {
@@ -67,6 +80,14 @@ public class main {
                     System.out.print("Enter the name of the item to search: ");
                     String searchItem = scanner.nextLine();
                     InventoryTracker.search(searchItem);
+                    try {
+                        if (searchItem.matches(".*[^a-zA-Z0-9 ].*")) {
+                            System.out.println("Invalid input detected. Returning to main menu.");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        Thread.currentThread().interrupt();
+                    }
                     break;
                 case "4":
                 case "storeInventory":
