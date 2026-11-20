@@ -1,6 +1,8 @@
+
 import java.util.Scanner;
 
 public class main {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -21,12 +23,36 @@ public class main {
                 case "add":
                     System.out.print("Enter item name: ");
                     String name = scanner.nextLine();
-                    System.out.print("Enter item category: ");
-                    String category = scanner.nextLine();
+                    InventoryTracker.Item.Category category = null;
+                    System.out.print("Enter item category (BOOKS, STATIONERY, ELECTRONICS): ");
+                    for (int i = 0; i < 3; i++) {
+                        String categoryInput = scanner.nextLine();
+                        try {
+                            category = InventoryTracker.Item.Category.valueOf(categoryInput.toUpperCase());
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            if (i < 2) {
+                                System.out.println("Invalid category. Please enter a valid category.");
+                            } else {
+                                System.out.println("Invalid category entered multiple times. Returning to main menu.");
+                            }
+                        }
+                        
+                    }
+                    if (category == null) {
+                        break; // Exit the add item process if category is invalid
+                    }
                     System.out.print("Enter item quantity: ");
-                    int quantity = scanner.nextInt();
-                    scanner.nextLine();
-                    InventoryTracker.addItem(name, InventoryTracker.Item.Category.valueOf(category.toUpperCase()), quantity);
+                    try {
+                        int quantity = Integer.parseInt(scanner.nextLine());
+                        if (quantity <= 0) {
+                            System.out.println("Quantity cannot be negative or zero. Please enter a valid quantity.");
+                            break;
+                        }
+                        InventoryTracker.addItem(name, category, quantity);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid quantity. Please enter a valid integer.");
+                    }
                     break;
                 case "2":
                 case "removeItem":

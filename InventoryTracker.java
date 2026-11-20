@@ -6,11 +6,11 @@ import java.util.Scanner;
 
 public class InventoryTracker {
 
-    static class Item {
+    public static class Item {
 
         String name;
 
-        enum Category {
+        public enum Category {
             BOOKS, STATIONERY, ELECTRONICS
         }
         Category category;
