@@ -15,6 +15,7 @@ public class main {
             System.out.println("6. Load Inventory from File");
             System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
+            InventoryTracker.displayInventory();
             String choice = scanner.nextLine();
 
             switch (choice) {
@@ -41,7 +42,7 @@ public class main {
                     for (int i = 0; i < 3; i++) {
                         String categoryInput = scanner.nextLine();
                         try {
-                            category = InventoryTracker.Item.Category.valueOf(categoryInput.toUpperCase());
+                            category = InventoryTracker.Item.Category.valueOf(categoryInput.trim().toUpperCase());
                             break;
                         } catch (IllegalArgumentException e) {
                             if (i < 2) {
@@ -50,7 +51,6 @@ public class main {
                                 System.out.println("Invalid category entered multiple times. Returning to main menu.");
                             }
                         }
-                        
                     }
                     if (category == null) {
                         break; // Exit the add item process if category is invalid
@@ -72,6 +72,14 @@ public class main {
                 case "remove":
                     System.out.print("Enter item name to remove: ");
                     String removeName = scanner.nextLine();
+                    try {
+                        if (removeName.matches(".*[^a-zA-Z0-9 ].*")) {
+                            System.out.println("Invalid input detected. Returning to main menu.");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while removing the item. Please try again.");
+                    }
                     InventoryTracker.removeItem(removeName);
                     break;
                 case "3":
@@ -86,7 +94,7 @@ public class main {
                             break;
                         }
                     } catch (Exception e) {
-                        Thread.currentThread().interrupt();
+                        System.err.println("An error occurred while searching for the item. Please try again.");
                     }
                     break;
                 case "4":
@@ -102,7 +110,15 @@ public class main {
                 case "6":
                 case "loadInventory":
                 case "load":
-                    InventoryTracker.load(args);
+                    InventoryTracker.load();
+                    try {
+                        if (args.length == 0 || args[0].trim().isEmpty()) {
+                            System.out.println("No file found to load.");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while loading the inventory. Please try again.");
+                    }
                     break;
                 case "7":
                 case "exit":

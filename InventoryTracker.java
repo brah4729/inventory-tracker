@@ -26,7 +26,7 @@ public class InventoryTracker {
     static ArrayList<Item> inventory = new ArrayList<>();
 
     //load inventory from a local file storage
-    public static void load(String[] args) {
+    public static void load() {
         try {
             Scanner scanner = new Scanner(new java.io.File("inventory.txt"));
             while (scanner.hasNextLine()) {
