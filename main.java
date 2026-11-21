@@ -57,13 +57,13 @@ public class main {
                     System.out.print("Enter item quantity: ");
                     try {
                         int quantity = Integer.parseInt(scanner.nextLine());
-                        if (quantity <= 0) {
-                            System.out.println("Quantity cannot be negative or zero. Please enter a valid quantity.");
+                        if (quantity <= 0 || quantity > 2147483647) {
+                            System.out.println("Quantity must be a positive integer not exceeding 2,147,483,647. Please enter a valid quantity.");
                             break;
                         }
                         InventoryTracker.addItem(name, category, quantity);
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid quantity. Please enter a valid integer.");
+                        System.out.println("Invalid quantity. Please enter a valid number. between 1 and 2,147,483,647.");
                     }
                     break;
                 case "2":
