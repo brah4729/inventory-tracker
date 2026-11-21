@@ -25,7 +25,7 @@ public class main {
                     String name = scanner.nextLine();
                     try {
                         if (InventoryTracker.isValid(name)) {
-                            System.out.println("Invalid input detected. input cant contain ");
+                            System.out.println("Invalid input detected. input cant contain special characters or be empty.");
                             break;
                         }
                     } catch (Exception e) {
@@ -69,7 +69,7 @@ public class main {
                     String removeName = scanner.nextLine();
                     try {
                         if (InventoryTracker.isValid(removeName)) {
-                            System.out.println("Invalid input detected. input cant contain ");
+                            System.out.println("Invalid input detected. input cant contain special characters or be empty.");
                             break;
                         }
                     } catch (Exception e) {
@@ -85,7 +85,7 @@ public class main {
                     InventoryTracker.search(searchItem);
                     try {
                         if (InventoryTracker.isValid(searchItem)) {
-                            System.out.println("Invalid input detected. input cant contain ");
+                            System.out.println("Invalid input detected. input cant contain special characters or be empty.");
                             break;
                         }
                     } catch (Exception e) {
