@@ -15,7 +15,6 @@ public class main {
             System.out.println("6. Load Inventory from File");
             System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
-            InventoryTracker.displayInventory();
             String choice = scanner.nextLine();
 
             switch (choice) {
