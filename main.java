@@ -24,12 +24,8 @@ public class main {
                     System.out.print("Enter item name: ");
                     String name = scanner.nextLine();
                     try {
-                        if (name.trim().isEmpty()) {
-                            System.out.println("Item name cannot be empty. Please enter a valid name.");
-                            break;
-                        }
-                        if (name.matches(".*[^a-zA-Z0-9 ].*")) {
-                            System.out.println("Item name contains invalid characters. Please enter a valid name.");
+                        if (InventoryTracker.isValid(name)) {
+                            System.out.println("Invalid input detected. input cant contain ");
                             break;
                         }
                     } catch (Exception e) {
@@ -72,8 +68,8 @@ public class main {
                     System.out.print("Enter item name to remove: ");
                     String removeName = scanner.nextLine();
                     try {
-                        if (removeName.matches(".*[^a-zA-Z0-9 ].*")) {
-                            System.out.println("Invalid input detected. Returning to main menu.");
+                        if (InventoryTracker.isValid(removeName)) {
+                            System.out.println("Invalid input detected. input cant contain ");
                             break;
                         }
                     } catch (Exception e) {
@@ -88,8 +84,8 @@ public class main {
                     String searchItem = scanner.nextLine();
                     InventoryTracker.search(searchItem);
                     try {
-                        if (searchItem.matches(".*[^a-zA-Z0-9 ].*")) {
-                            System.out.println("Invalid input detected. Returning to main menu.");
+                        if (InventoryTracker.isValid(searchItem)) {
+                            System.out.println("Invalid input detected. input cant contain ");
                             break;
                         }
                     } catch (Exception e) {

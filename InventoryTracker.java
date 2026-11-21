@@ -101,4 +101,7 @@ public class InventoryTracker {
             System.out.println("Error occurred while writing to file.");
         }
     }
+    public static boolean isValid(String args) {
+        return !args.isEmpty() && args.matches(".*[^a-zA-Z0-9 ].*");
+    }
 }
