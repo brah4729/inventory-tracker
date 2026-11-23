@@ -175,9 +175,9 @@ public class ConsoleMenu {
             }
             switch (input) {
                 case "", "1":
-                    return Optional.of(SortBy.ASCENDING);
+                    return Optional.of(SortBy.NAME_ASC);
                 case "2":
-                    return Optional.of(SortBy.DESCENDING);
+                    return Optional.of(SortBy.NAME_DESC);
                 case "3":
                     return Optional.of(SortBy.CATEGORY);
                 default:
