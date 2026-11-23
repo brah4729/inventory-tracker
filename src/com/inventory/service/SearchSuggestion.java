@@ -1,29 +1,25 @@
 package com.inventory.service;
 
-import com.inventory.exception.OutOfStockException;
-import com.inventory.model.Category;
 import com.inventory.model.Item;
-import com.inventory.repository.InventoryRepository;
 import java.util.*;
 
 public class SearchSuggestion {
 
-    private final InventoryRepository repository;
-
-    public SearchSuggestion(InventoryRepository repository) {
-        this.repository = repository;
-    }
 
     public List<Item> suggestItems(List<Item> items, String input, int limit) {
+        if (input == null || input .isBlank() || limit <= 0 ){
+            return Collections.emptyList();
+        }
         String normalizedQuery = input.trim().toLowerCase();
-        List<String> startsWith = new ArrayList<>();
-        List<String> contains = new ArrayList<>();
+        List<Item> startsWith = new ArrayList<>();
+        List<Item> contains = new ArrayList<>();
+
         for (Item item : items) {
-            String name = item.getName().tolowercase();
+            String name = item.getName().toLowerCase();
             if (name.startsWith(normalizedQuery)) {
-                startsWith.add(item.getName()); 
+                startsWith.add(item); 
             }else if (name.contains(normalizedQuery)) {
-                contains.add(item.getName());
+                contains.add(item);
             }
         }
         startsWith.addAll(contains);

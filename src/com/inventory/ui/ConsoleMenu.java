@@ -5,8 +5,8 @@ import com.inventory.model.Category;
 import com.inventory.model.Item;
 import com.inventory.service.InventoryService;
 import com.inventory.service.ItemSorter;
-import com.inventory.service.SearchSuggestion;
 import com.inventory.service.ItemSorter.SortBy;
+import com.inventory.service.SearchSuggestion;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -125,6 +125,9 @@ public class ConsoleMenu {
         if (keyword.isEmpty()) {
             return;
         }
+        
+        List<Item> suggestions = suggestion.suggestItems(service.getAllItems(), keyword.get(), 5);
+        listItems(suggestions);
         listItems(service.searchByName(keyword.get()));
     }
 
@@ -159,9 +162,6 @@ public class ConsoleMenu {
             System.out.println(item);
         }
     }
-    public List<String> suggestion(String input) {
-    return suggester.suggest(repository.findAll(), input, 5);
-}
     private Optional<SortBy> readSortBy() {
         System.out.println("Sort by:");
         System.out.println("  1. Name (A-Z)");
