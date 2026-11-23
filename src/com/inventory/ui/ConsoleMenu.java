@@ -166,7 +166,10 @@ public class ConsoleMenu {
         System.out.println("Sort by:");
         System.out.println("  1. Name (A-Z)");
         System.out.println("  2. Name (Z-A)");
-        System.out.println("  3. Category");
+        System.out.println("  3. Category (A-Z)");
+        System.out.println("  4. Category (Z-A");
+        System.out.println("  5. Quant (ASC)");
+        System.out.println("  6. Category (DESC)");
         while (true) {
             System.out.print("Choice (Enter = A-Z, 'b' = back): ");
             String input = scanner.nextLine().trim();
@@ -179,7 +182,13 @@ public class ConsoleMenu {
                 case "2":
                     return Optional.of(SortBy.NAME_DESC);
                 case "3":
-                    return Optional.of(SortBy.CATEGORY);
+                    return Optional.of(SortBy.CATEGORY_ASC);
+                case "4":
+                    return Optional.of(SortBy.CATEGORY_DESC);
+                case "5":
+                    return Optional.of(SortBy.QUANT_ASC);
+                case "6":
+                    return Optional.of(SortBy.QUANT_DESC);
                 default:
                     System.out.println("Invalid choice.");
             }
