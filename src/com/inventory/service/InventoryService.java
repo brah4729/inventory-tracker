@@ -4,12 +4,14 @@ import com.inventory.exception.OutOfStockException;
 import com.inventory.model.Category;
 import com.inventory.model.Item;
 import com.inventory.repository.InventoryRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/** Business rules live here (validation, stock checks, searching). */
+/**
+ * Business rules live here (validation, stock checks, searching).
+ */
 public class InventoryService {
+
     private final InventoryRepository repository;
 
     public InventoryService(InventoryRepository repository) {
@@ -87,5 +89,18 @@ public class InventoryService {
             throw new IllegalArgumentException("No item with id " + id);
         }
         return item;
+    }
+    // InventoryService
+    private final SearchSuggestion suggestion = new SearchSuggestion();
+
+    public List<Item> getSortedItems(ItemSorter.SortBy sortBy) {
+        return ItemSorter.sort(repository.findAll(), sortBy);
+    }
+
+    public List<Item> searchItems(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException("Keyword cannot be empty.");
+        }
+        return suggestion.suggestItems(repository.findAll(), keyword, Integer.MAX_VALUE);
     }
 }

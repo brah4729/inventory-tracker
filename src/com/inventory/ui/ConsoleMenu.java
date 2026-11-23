@@ -6,7 +6,6 @@ import com.inventory.model.Item;
 import com.inventory.service.InventoryService;
 import com.inventory.service.ItemSorter;
 import com.inventory.service.ItemSorter.SortBy;
-import com.inventory.service.SearchSuggestion;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -17,7 +16,6 @@ import java.util.Scanner;
 public class ConsoleMenu {
 
     private static final int LOW_STOCK_THRESHOLD = 5;
-    private final SearchSuggestion suggestion = new SearchSuggestion();
     private final InventoryService service;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -126,9 +124,7 @@ public class ConsoleMenu {
             return;
         }
         
-        List<Item> suggestions = suggestion.suggestItems(service.getAllItems(), keyword.get(), 5);
-        listItems(suggestions);
-        listItems(service.searchByName(keyword.get()));
+        listItems(service.searchItems(keyword.get()));
     }
 
     private void deleteItem() {
@@ -169,7 +165,7 @@ public class ConsoleMenu {
         System.out.println("  3. Category (A-Z)");
         System.out.println("  4. Category (Z-A");
         System.out.println("  5. Quant (ASC)");
-        System.out.println("  6. Category (DESC)");
+        System.out.println("  6. Quant (DESC)");
         while (true) {
             System.out.print("Choice (Enter = A-Z, 'b' = back): ");
             String input = scanner.nextLine().trim();
