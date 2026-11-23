@@ -15,13 +15,17 @@ public final class ItemSorter {
     private ItemSorter() {
 
     }
+
     public static List<Item> sort(List<Item> items, SortBy sortBy) {
         List<Item> sorted = new ArrayList<>(items);
         Comparator<Item> byName = Comparator.comparing(Item::getName, String.CASE_INSENSITIVE_ORDER);
         switch (sortBy) {
-            case ASCENDING -> sorted.sort(byName);
-            case DESCENDING -> sorted.sort(byName.reversed());
-            case CATEGORY -> sorted.sort(Comparator.comparing(Item::getCategory).thenComparing(byName));
+            case ASCENDING ->
+                sorted.sort(byName);
+            case DESCENDING ->
+                sorted.sort(byName.reversed());
+            case CATEGORY ->
+                sorted.sort(Comparator.comparing(Item::getCategory).thenComparing(byName));
         }
         return sorted;
     }
