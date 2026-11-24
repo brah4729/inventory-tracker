@@ -29,7 +29,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return String.format("#%d | %-15s | qty: %-4d | $%.2f | %s",
+        return String.format("%-5d | %-15s | %-5d | %-8.2f | %s",
                 id, name, quantity, price, category);
     }
 }

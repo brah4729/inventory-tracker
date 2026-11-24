@@ -4,15 +4,19 @@ import com.inventory.exception.OutOfStockException;
 import com.inventory.model.Category;
 import com.inventory.model.Item;
 import com.inventory.repository.InventoryRepository;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Business rules live here (validation, stock checks, searching).
+ * Business rules live here (validation, stock checks, searching, sorting).
  */
 public class InventoryService {
 
     private final InventoryRepository repository;
+    private final SearchSuggestion suggestion = new SearchSuggestion();
 
     public InventoryService(InventoryRepository repository) {
         this.repository = repository;
@@ -63,14 +67,15 @@ public class InventoryService {
         return repository.findAll();
     }
 
-    public List<Item> searchByName(String keyword) {
-        List<Item> results = new ArrayList<>();
-        for (Item item : repository.findAll()) {
-            if (item.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                results.add(item);
-            }
+    public List<Item> getSortedItems(ItemSorter.SortBy sortBy) {
+        return ItemSorter.sort(repository.findAll(), sortBy);
+    }
+
+    public List<Item> searchItems(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException("Keyword cannot be empty.");
         }
-        return results;
+        return suggestion.suggestItems(repository.findAll(), keyword, Integer.MAX_VALUE);
     }
 
     public List<Item> getLowStockItems(int threshold) {
@@ -83,24 +88,19 @@ public class InventoryService {
         return results;
     }
 
+    public void save(Path path) throws IOException {
+        repository.saveToFile(path);
+    }
+
+    public void load(Path path) throws IOException {
+        repository.loadFromFile(path);
+    }
+
     private Item getItemOrThrow(int id) {
         Item item = repository.findById(id);
         if (item == null) {
             throw new IllegalArgumentException("No item with id " + id);
         }
         return item;
-    }
-    // InventoryService
-    private final SearchSuggestion suggestion = new SearchSuggestion();
-
-    public List<Item> getSortedItems(ItemSorter.SortBy sortBy) {
-        return ItemSorter.sort(repository.findAll(), sortBy);
-    }
-
-    public List<Item> searchItems(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            throw new IllegalArgumentException("Keyword cannot be empty.");
-        }
-        return suggestion.suggestItems(repository.findAll(), keyword, Integer.MAX_VALUE);
     }
 }

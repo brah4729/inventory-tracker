@@ -4,8 +4,9 @@ import com.inventory.exception.OutOfStockException;
 import com.inventory.model.Category;
 import com.inventory.model.Item;
 import com.inventory.service.InventoryService;
-import com.inventory.service.ItemSorter;
 import com.inventory.service.ItemSorter.SortBy;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -16,6 +17,8 @@ import java.util.Scanner;
 public class ConsoleMenu {
 
     private static final int LOW_STOCK_THRESHOLD = 5;
+    private static final Path SAVE_FILE = Path.of("inventory.txt");
+
     private final InventoryService service;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -30,24 +33,17 @@ public class ConsoleMenu {
             String choice = scanner.nextLine().trim();
             try {
                 switch (choice) {
-                    case "1" ->
-                        addItem();
-                    case "2" ->
-                        listAllItems();
-                    case "3" ->
-                        addStock();
-                    case "4" ->
-                        removeStock();
-                    case "5" ->
-                        searchItems();
-                    case "6" ->
-                        listItems(service.getLowStockItems(LOW_STOCK_THRESHOLD));
-                    case "7" ->
-                        deleteItem();
-                    case "0" ->
-                        running = false;
-                    default ->
-                        System.out.println("Invalid choice, try again.");
+                    case "1" -> addItem();
+                    case "2" -> listAllItems();
+                    case "3" -> addStock();
+                    case "4" -> removeStock();
+                    case "5" -> searchItems();
+                    case "6" -> listItems(service.getLowStockItems(LOW_STOCK_THRESHOLD));
+                    case "7" -> deleteItem();
+                    case "8" -> saveItems();
+                    case "9" -> loadItems();
+                    case "0" -> running = false;
+                    default -> System.out.println("Invalid choice, try again.");
                 }
             } catch (OutOfStockException e) {
                 System.out.println("Stock error: " + e.getMessage());
@@ -67,6 +63,8 @@ public class ConsoleMenu {
         System.out.println("5. Search by name");
         System.out.println("6. Low-stock report (<= " + LOW_STOCK_THRESHOLD + ")");
         System.out.println("7. Delete item");
+        System.out.println("8. Save to file");
+        System.out.println("9. Load from file");
         System.out.println("0. Exit");
         System.out.print("Choose: ");
     }
@@ -123,7 +121,6 @@ public class ConsoleMenu {
         if (keyword.isEmpty()) {
             return;
         }
-        
         listItems(service.searchItems(keyword.get()));
     }
 
@@ -136,9 +133,27 @@ public class ConsoleMenu {
         System.out.println("Item deleted.");
     }
 
+    private void saveItems() {
+        try {
+            service.save(SAVE_FILE);
+            System.out.println("Saved to " + SAVE_FILE.toAbsolutePath());
+        } catch (IOException e) {
+            System.out.println("Could not save: " + e.getMessage());
+        }
+    }
+
+    private void loadItems() {
+        try {
+            service.load(SAVE_FILE);
+            System.out.println("Loaded " + service.getAllItems().size()
+                    + " item(s) from " + SAVE_FILE.toAbsolutePath());
+        } catch (IOException e) {
+            System.out.println("Could not load: " + e.getMessage());
+        }
+    }
+
     private void listAllItems() {
-        List<Item> items = service.getAllItems();
-        if (items.isEmpty()) {
+        if (service.getAllItems().isEmpty()) {
             System.out.println("(no items)");
             return;
         }
@@ -146,7 +161,7 @@ public class ConsoleMenu {
         if (sortBy.isEmpty()) {
             return;
         }
-        listItems(ItemSorter.sort(items, sortBy.get()));
+        listItems(service.getSortedItems(sortBy.get()));
     }
 
     private void listItems(List<Item> items) {
@@ -154,18 +169,22 @@ public class ConsoleMenu {
             System.out.println("(no items)");
             return;
         }
+        System.out.println(String.format("%-5s | %-15s | %-5s | %-8s | %s",
+                "ID", "Name", "Qty", "Price", "Category"));
+        System.out.println("-".repeat(60));
         for (Item item : items) {
             System.out.println(item);
         }
     }
+
     private Optional<SortBy> readSortBy() {
         System.out.println("Sort by:");
         System.out.println("  1. Name (A-Z)");
         System.out.println("  2. Name (Z-A)");
         System.out.println("  3. Category (A-Z)");
-        System.out.println("  4. Category (Z-A");
-        System.out.println("  5. Quant (ASC)");
-        System.out.println("  6. Quant (DESC)");
+        System.out.println("  4. Category (Z-A)");
+        System.out.println("  5. Quantity (low to high)");
+        System.out.println("  6. Quantity (high to low)");
         while (true) {
             System.out.print("Choice (Enter = A-Z, 'b' = back): ");
             String input = scanner.nextLine().trim();
@@ -173,25 +192,19 @@ public class ConsoleMenu {
                 return Optional.empty();
             }
             switch (input) {
-                case "", "1":
-                    return Optional.of(SortBy.NAME_ASC);
-                case "2":
-                    return Optional.of(SortBy.NAME_DESC);
-                case "3":
-                    return Optional.of(SortBy.CATEGORY_ASC);
-                case "4":
-                    return Optional.of(SortBy.CATEGORY_DESC);
-                case "5":
-                    return Optional.of(SortBy.QUANT_ASC);
-                case "6":
-                    return Optional.of(SortBy.QUANT_DESC);
-                default:
-                    System.out.println("Invalid choice.");
+                case "", "1" -> { return Optional.of(SortBy.NAME_ASC); }
+                case "2" -> { return Optional.of(SortBy.NAME_DESC); }
+                case "3" -> { return Optional.of(SortBy.CATEGORY_ASC); }
+                case "4" -> { return Optional.of(SortBy.CATEGORY_DESC); }
+                case "5" -> { return Optional.of(SortBy.QUANT_ASC); }
+                case "6" -> { return Optional.of(SortBy.QUANT_DESC); }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
 
     // ---- input helpers: return empty when the user types 'b' to go back ----
+
     private Optional<String> readString(String prompt) {
         System.out.print(prompt + " (or 'b' to go back): ");
         String input = scanner.nextLine().trim();
