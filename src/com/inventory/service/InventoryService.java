@@ -4,12 +4,10 @@ import com.inventory.exception.OutOfStockException;
 import com.inventory.model.Category;
 import com.inventory.model.Item;
 import com.inventory.repository.InventoryRepository;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Business rules live here (validation, stock checks, searching, sorting).
  */

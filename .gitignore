@@ -1,2 +1,4 @@
 out/
 .env
+inventory.txt
+test.java
